@@ -23,7 +23,7 @@ const AuthProvider = (props) => {
   // false = user is not logged in, but the app has loaded
   // an object/value = user is logged in
 
-  const updateUser = useMemo(
+  const onUpdate = useMemo(
     () => (uid) => checkUser(uid).then((gamerInfo) => {
       setUser({ fbUser: oAuthUser, ...gamerInfo });
     }),
@@ -32,6 +32,7 @@ const AuthProvider = (props) => {
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((fbUser) => {
+      console.log(fbUser);
       if (fbUser) {
         setOAuthUser(fbUser);
         checkUser(fbUser.uid).then((gamerInfo) => {
@@ -54,12 +55,12 @@ const AuthProvider = (props) => {
     // https://reactjs.org/docs/hooks-reference.html#usememo
     () => ({
       user,
-      updateUser,
+      onUpdate,
       userLoading: user === null || oAuthUser === null,
       // as long as user === null, will be true
       // As soon as the user value !== null, value will be false
     }),
-    [user, oAuthUser, updateUser],
+    [user, oAuthUser, onUpdate],
   );
 
   return <AuthContext.Provider value={value} {...props} />;
