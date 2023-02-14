@@ -1,39 +1,83 @@
+/* eslint-disable react/require-default-props */
+import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { registerUser } from '../utils/auth'; // Update with path to registerUser
 
-function RegisterForm({ user, updateUser }) {
+function RegisterForm({ user, onUpdate }) {
+  console.warn(user.uid);
+  console.warn(user.fbUser.photoURL);
+  const router = useRouter();
   const [formData, setFormData] = useState({
-    bio: '',
+    about: '',
+    firstName: '',
+    lastName: '',
+    city: '',
+    state: '',
+    country: '',
+    email: user.fbUser.email,
+    profileImage: user.fbUser.photoURL,
     uid: user.uid,
   });
 
+  useEffect(() => {
+    if (user.id) {
+      setFormData(user);
+    }
+  }, [user, router]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    registerUser(formData).then(() => updateUser(user.uid));
+    registerUser(user, formData).then(() => onUpdate(user.uid));
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Gamer Bio</Form.Label>
-        <Form.Control as="textarea" name="bio" required placeholder="Enter your Bio" onChange={({ target }) => setFormData((prev) => ({ ...prev, [target.name]: target.value }))} />
-        <Form.Text className="text-muted">Let other gamers know a little bit about you...</Form.Text>
-      </Form.Group>
-      <Button variant="primary" type="submit">
-        Submit
-      </Button>
-    </Form>
+    <>
+      <h1>{user.id ? 'Edit User Profile' : 'Create User Profile'}</h1>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+
+          <Form.Control name="firstName" placeholder="Enter your first name" required value={formData.firstName} onChange={handleChange} />
+
+          <Form.Control name="lastName" placeholder="Enter your last name" required value={formData.lastName} onChange={handleChange} />
+
+          <Form.Control name="about" as="textarea" placeholder="Tell us about yourself" required value={formData.about} onChange={handleChange} />
+
+          <Form.Control name="city" placeholder="Enter your city" required value={formData.city} onChange={handleChange} />
+
+          <Form.Control name="state" placeholder="Enter your state" required value={formData.state} onChange={handleChange} />
+
+          <Form.Control name="country" placeholder="Enter your country" required value={formData.country} onChange={handleChange} />
+
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          {user.id ? 'Update' : 'Submit'}
+        </Button>
+      </Form>
+    </>
   );
 }
 
 RegisterForm.propTypes = {
   user: PropTypes.shape({
-    uid: PropTypes.string.isRequired,
+    uid: PropTypes.string,
+    id: PropTypes.number,
+    fbUser: PropTypes.shape({
+      photoURL: PropTypes.string,
+      email: PropTypes.string,
+    }),
   }).isRequired,
-  updateUser: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func,
 };
 
 export default RegisterForm;
