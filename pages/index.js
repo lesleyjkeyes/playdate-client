@@ -1,18 +1,27 @@
-import { Button } from 'react-bootstrap';
-import { signOut } from '../utils/auth';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../utils/context/authContext';
-import DogCard from '../components/DogCard';
+import PetCard from '../components/PetCard';
+import { getAllPets } from '../utils/data/petData';
 
 function Home() {
   const { user } = useAuth();
+  const [pets, setPets] = useState();
+
+  const getPets = () => {
+    getAllPets().then((petsArray) => {
+      setPets(petsArray);
+    });
+  };
+
+  useEffect(() => {
+    getPets();
+  }, []);
+
   return (
     <div>
-      <DogCard />
-      <h1>Hello {user.fbUser.displayName}! </h1>
-      <p>Click the button below to logout!</p>
-      <Button variant="danger" type="button" size="lg" className="copy-btn" onClick={signOut}>
-        Sign Out
-      </Button>
+      {pets?.map((pet) => (
+        <PetCard key={pet.id} petObj={pet} user={user} opts={{ height: '160', width: '280' }} onUpdate={getPets} />
+      ))}
     </div>
   );
 }
