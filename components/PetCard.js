@@ -6,11 +6,13 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useAuth } from '../utils/context/authContext';
 import { getTraitsByPet } from '../utils/data/traitData';
 import { getInterestsByPet } from '../utils/data/interestData';
+import { deleteSinglePet } from '../utils/data/petData';
 
-export default function PetCard({ petObj }) {
+export default function PetCard({ petObj, onUpdate }) {
   const { user } = useAuth();
   const [traits, setTraits] = useState([]);
   const [interests, setInterests] = useState([]);
@@ -20,14 +22,20 @@ export default function PetCard({ petObj }) {
     getInterestsByPet(petObj?.id).then(setInterests);
   }, [petObj]);
 
+  const deleteThisPet = () => {
+    if (window.confirm(`Delete ${petObj.name}?`)) {
+      deleteSinglePet(petObj.id).then(() => onUpdate());
+    }
+  };
+
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardActionArea>
         <CardMedia
           component="img"
           height="140"
-          image={petObj?.profileImage}
-          alt="green iguana"
+          image={petObj?.profile_image}
+          alt={petObj?.name}
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
@@ -62,19 +70,23 @@ export default function PetCard({ petObj }) {
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActionArea>
-        <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            Owner: {petObj.owner?.first_name} {petObj.owner?.last_name}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
+      <Link href={`/userProfile/${petObj.owner?.id}`} passHref>
+        <CardActionArea>
+          <CardContent>
+            <Typography variant="body2" color="text.secondary">
+              Owner: {petObj.owner?.first_name} {petObj.owner?.last_name}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+      </Link>
       { user.id === petObj.owner?.id && (
       <CardActions>
-        <Button size="small" color="primary">
-          Edit
-        </Button>
-        <Button size="small" color="primary">
+        <Link href={`/pet/edit/${petObj?.id}`} passHref>
+          <Button size="small" color="primary">
+            Edit
+          </Button>
+        </Link>
+        <Button size="small" color="primary" onClick={deleteThisPet}>
           Delete
         </Button>
       </CardActions>
@@ -87,7 +99,7 @@ PetCard.propTypes = {
   petObj: PropTypes.shape({
     name: PropTypes.string,
     about: PropTypes.string,
-    profileImage: PropTypes.string,
+    profile_image: PropTypes.string,
     id: PropTypes.number,
     breed: PropTypes.string,
     owner: PropTypes.shape({
@@ -103,5 +115,5 @@ PetCard.propTypes = {
     id: PropTypes.number,
     title: PropTypes.string,
   }).isRequired,
-  // onUpdate: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
 };
