@@ -10,6 +10,9 @@ import { createPet, updatePet } from '../../utils/data/petData';
 import {
   createPetTrait, deletePetTrait, getAllTraits, getTraitsByPet,
 } from '../../utils/data/traitData';
+import {
+  createPetInterests, deletePetInterest, getAllInterests, getInterestsByPet,
+} from '../../utils/data/interestData';
 
 const initialState = {
   name: '',
@@ -21,17 +24,21 @@ function PetForm({ obj }) {
   const [formInput, setFormInput] = useState(initialState);
   const [traits, setTraits] = useState([]);
   const [selectedTraits, setSelectedTraits] = useState([]);
+  const [interests, setInterests] = useState([]);
+  const [selectedInterests, setSelectedInterests] = useState([]);
   const router = useRouter();
   const { user } = useAuth();
 
   useEffect(() => {
     getAllTraits().then(setTraits);
+    getAllInterests().then(setInterests);
   }, []);
 
   useEffect(() => {
     if (obj?.id) {
       setFormInput(obj);
       getTraitsByPet(obj?.id).then((traitArray) => setSelectedTraits(traitArray.map((trait) => trait.pet_trait?.id)));
+      getInterestsByPet(obj?.id).then((interestArray) => setSelectedInterests(interestArray.map((interest) => interest.pet_interest?.id)));
     }
   }, [obj]);
 
@@ -48,6 +55,14 @@ function PetForm({ obj }) {
       setSelectedTraits(selectedTraits.filter((trait) => trait !== traitId));
     } else {
       setSelectedTraits([...selectedTraits, traitId]);
+    }
+  };
+
+  const handleInterestChange = (interestId) => {
+    if (selectedInterests.includes(interestId)) {
+      setSelectedInterests(selectedInterests.filter((interest) => interest !== interestId));
+    } else {
+      setSelectedInterests([...selectedInterests, interestId]);
     }
   };
 
@@ -71,6 +86,23 @@ function PetForm({ obj }) {
           }
         });
       });
+      getInterestsByPet(obj.id).then((existingPetInterests) => {
+        existingPetInterests.forEach((existingPetInterest) => {
+          if (!selectedInterests.includes(existingPetInterest.pet_interest_id)) {
+            deletePetInterest(existingPetInterest.id);
+          }
+        });
+        selectedInterests.forEach((interestId) => {
+          const existingPetInterest = existingPetInterests.find((petInterest) => petInterest.pet_interest_id === interestId);
+          if (!existingPetInterest) {
+            const petInterestObj = {
+              pet_id: obj.id,
+              pet_interest_id: interestId,
+            };
+            createPetInterests(petInterestObj);
+          }
+        });
+      });
       updatePet(formInput)
         .then(() => router.push('/'));
     } else {
@@ -84,6 +116,13 @@ function PetForm({ obj }) {
             pet_trait_id: traitId,
           };
           createPetTrait(petTraitObj);
+        });
+        selectedInterests.forEach((interestId) => {
+          const petInterestObj = {
+            pet_id: response.id,
+            pet_interest_id: interestId,
+          };
+          createPetTrait(petInterestObj);
         });
         router.push('/');
       });
@@ -107,6 +146,7 @@ function PetForm({ obj }) {
           <FloatingLabel controlId="floatingInput2" label="Breed" className="mb-3">
             <Form.Control type="text" placeholder="Add Breed" name="breed" value={formInput.breed} onChange={handleChange} />
           </FloatingLabel>
+          Traits:
           {
           traits.map((trait) => (
             <Form.Check
@@ -121,6 +161,21 @@ function PetForm({ obj }) {
             />
           ))
         }
+          Interests:
+          {
+            interests.map((interest) => (
+              <Form.Check
+                inline
+                label={interest.title}
+                name="check"
+                type="checkbox"
+                value={interest.id}
+                key={interest.id}
+                checked={selectedInterests.includes(interest.id)}
+                onChange={() => handleInterestChange(interest.id)}
+              />
+            ))
+          }
           <Button type="submit">{obj?.id ? 'Update' : 'Create'} Pet</Button>
         </Form>
       ) : (
