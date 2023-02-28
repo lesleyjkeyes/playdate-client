@@ -33,7 +33,7 @@ export default function PetCard({ petObj, onUpdate }) {
       <CardActionArea>
         <CardMedia
           component="img"
-          height="140"
+          height="345"
           image={petObj?.profile_image}
           alt={petObj?.name}
         />
