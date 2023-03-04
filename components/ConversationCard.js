@@ -5,44 +5,44 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
+import Link from 'next/link';
 import { useAuth } from '../utils/context/authContext';
 
-export default function ConversationCard({ messageObj }) {
+export default function ConversationCard({ conversationObj }) {
   const { user } = useAuth();
-  console.warn(messageObj);
 
   return (
     <Card sx={{ maxWidth: 345 }}>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          height="140"
-          // { user.id === messageObj?.receiver.id
-          // image={messageObj?.sender.profile_image}}
-          image={user.id === messageObj?.receiver.id ? messageObj?.sender.profile_image : messageObj?.receiver.profile_image}
-          alt="green iguana"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            {user.id === messageObj?.receiver.id ? messageObj?.sender.first_name : messageObj?.receiver.first_name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Click here to view your messages
-          </Typography>
-        </CardContent>
-      </CardActionArea>
+      <Link href={`/conversations/messages/${conversationObj?.id}`} passHref>
+        <CardActionArea>
+          <CardMedia
+            component="img"
+            height="140"
+            image={user.id === conversationObj?.user_one.id ? conversationObj?.user_two.profile_image : conversationObj?.user_one.profile_image}
+            alt="green iguana"
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="div">
+              {user.id === conversationObj?.user_one.id ? conversationObj?.user_two.first_name : conversationObj?.user_one.first_name}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Click here to view your messages
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+      </Link>
     </Card>
   );
 }
 
 ConversationCard.propTypes = {
-  messageObj: PropTypes.shape({
+  conversationObj: PropTypes.shape({
     name: PropTypes.string,
     about: PropTypes.string,
     profile_image: PropTypes.string,
     id: PropTypes.number,
     breed: PropTypes.string,
-    sender: PropTypes.shape({
+    user_one: PropTypes.shape({
       id: PropTypes.string,
       profile_image: PropTypes.string,
       first_name: PropTypes.string,
@@ -51,7 +51,7 @@ ConversationCard.propTypes = {
       city: PropTypes.string,
       state: PropTypes.string,
     }),
-    receiver: PropTypes.shape({
+    user_two: PropTypes.shape({
       id: PropTypes.string,
       profile_image: PropTypes.string,
       first_name: PropTypes.string,

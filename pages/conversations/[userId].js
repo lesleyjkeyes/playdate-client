@@ -2,11 +2,11 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import ConversationCard from '../../components/ConversationCard';
 import { useAuth } from '../../utils/context/authContext';
-import getMessagesByUser from '../../utils/data/messageData';
+import { getConversationsByUser } from '../../utils/data/conversationData';
 import getUser from '../../utils/data/userData';
 
-function UserProfile() {
-  const [messages, setMessages] = useState([]);
+function UserConversations() {
+  const [conversations, setConversations] = useState([]);
   const [profile, setProfile] = useState({});
   const router = useRouter();
   const { userId } = router.query;
@@ -14,11 +14,10 @@ function UserProfile() {
 
   const getThisUser = () => {
     getUser(userId).then(setProfile);
-    console.warn(profile);
   };
 
   const getUsersConversations = () => {
-    getMessagesByUser(userId).then(setMessages);
+    getConversationsByUser(userId).then(setConversations);
   };
 
   useEffect(() => {
@@ -37,8 +36,8 @@ function UserProfile() {
         <div className="text-center my-4">
           <h2>{profile?.firstName} {profile?.lastName}</h2>
           <div className="conversationCards">
-            {messages?.map((message) => (
-              <ConversationCard key={user.id} messageObj={message} onUpdate={getUsersConversations} />
+            {conversations?.map((conversation) => (
+              <ConversationCard key={user.id} conversationObj={conversation} onUpdate={getUsersConversations} />
             ))}
           </div>
         </div>
@@ -51,4 +50,4 @@ function UserProfile() {
   );
 }
 
-export default UserProfile;
+export default UserConversations;
