@@ -1,27 +1,34 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import { signIn } from '../utils/auth';
+import dogBones from '../images/dogBones.avif';
 
 function Signin() {
   return (
     <div
+      id="sign-in-background"
       className="text-center d-flex flex-column justify-content-center align-content-center"
       style={{
-        height: '90vh',
-        padding: '30px',
-        margin: '0 auto',
-        zIndex: 1,
-        minHeight: '25rem',
-        width: '100%',
-        minWidth: '30rem',
-        paddingBlock: '0 5rem',
+        backgroundImage: `url(${dogBones.src})`,
+        height: 929,
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
       }}
     >
-      <h1>Hi there!</h1>
-      <p>Click the button below to login!</p>
-      <Button type="button" size="lg" className="copy-btn" onClick={signIn}>
-        Sign In
-      </Button>
+      <div
+        style={{
+          backgroundColor: 'white',
+          opacity: 0.75,
+          height: 400,
+        }}
+      >
+        <h1>Hi there!</h1>
+        <p>Click the button below to login!</p>
+        <Button type="button" size="lg" className="copy-btn" onClick={signIn}>
+          Sign In
+        </Button>
+      </div>
     </div>
   );
 }
