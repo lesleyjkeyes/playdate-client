@@ -18,7 +18,6 @@ export default function ProfileCard({ userObj }) {
       console.warn(data[0]);
       const followObject = data[0];
       setFollow(followObject);
-      console.warn(followObject);
     });
   };
 
