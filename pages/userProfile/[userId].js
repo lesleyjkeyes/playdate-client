@@ -26,6 +26,7 @@ function UserProfile() {
 
   useEffect(() => {
     getUsersPets();
+    console.log(profile);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
