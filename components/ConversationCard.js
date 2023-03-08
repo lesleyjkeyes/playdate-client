@@ -12,22 +12,30 @@ export default function ConversationCard({ conversationObj }) {
   const { user } = useAuth();
 
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 1000 }}>
       <Link href={`/conversations/messages/${conversationObj?.id}`} passHref>
         <CardActionArea>
-          <CardMedia
-            component="img"
-            height="140"
-            image={user.id === conversationObj?.user_one.id ? conversationObj?.user_two.profile_image : conversationObj?.user_one.profile_image}
-            alt="green iguana"
-          />
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              {user.id === conversationObj?.user_one.id ? conversationObj?.user_two.first_name : conversationObj?.user_one.first_name}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Click here to view your messages
-            </Typography>
+          <CardContent sx={{
+            display: 'flex',
+            flexDirection: 'row',
+          }}
+          >
+            <CardContent>
+              <CardMedia
+                component="img"
+                height="200"
+                image={user.id === conversationObj?.user_one.id ? conversationObj?.user_two.profile_image : conversationObj?.user_one.profile_image}
+                alt="green iguana"
+              />
+            </CardContent>
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {user.id === conversationObj?.user_one.id ? conversationObj?.user_two.first_name : conversationObj?.user_one.first_name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Click here to view your messages
+              </Typography>
+            </CardContent>
           </CardContent>
         </CardActionArea>
       </Link>

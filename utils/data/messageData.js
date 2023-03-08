@@ -15,4 +15,16 @@ const getMessagesByUsers = (userOneId, userTwoId) => new Promise((resolve, rejec
     .catch((error) => reject(error));
 });
 
-export default getMessagesByUsers;
+const createMessage = (message) => new Promise((resolve, reject) => {
+  fetch(`${clientCredentials.databaseURL}/messages`, {
+    method: 'POST',
+    body: JSON.stringify(message),
+    headers: {
+      'content-type': 'application/json',
+    },
+  })
+    .then((response) => resolve(response.json()))
+    .catch((error) => reject(error));
+});
+
+export { getMessagesByUsers, createMessage };

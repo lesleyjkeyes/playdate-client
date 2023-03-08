@@ -40,6 +40,29 @@ const getPetsByCity = (userId, city) => new Promise((resolve, reject) => {
     }).catch((error) => reject(error));
 });
 
+const getAllPetsWithTraits = () => new Promise((resolve, reject) => {
+  axios.get(`${dbUrl}/pettraits?pets=true`)
+    .then((response) => {
+      if (response.data) {
+        resolve(Object.values(response.data));
+      } else {
+        resolve([]);
+      }
+    })
+    .catch((error) => reject(error));
+});
+
+const getPetsByTrait = (trait) => new Promise((resolve, reject) => {
+  axios.get(`${dbUrl}/pets?trait=${trait}`)
+    .then((response) => {
+      if (response.data) {
+        resolve(Object.values(response.data));
+      } else {
+        resolve([]);
+      }
+    }).catch((error) => reject(error));
+});
+
 const createPet = (user, pet) => new Promise((resolve, reject) => {
   const petObj = {
     owner_id: user.id,
@@ -99,4 +122,6 @@ export {
   updatePet,
   deleteSinglePet,
   getPetsByUser,
+  getPetsByTrait,
+  getAllPetsWithTraits,
 };

@@ -7,8 +7,6 @@ import Form from 'react-bootstrap/Form';
 import { registerUser } from '../utils/auth'; // Update with path to registerUser
 
 function RegisterForm({ user, onUpdate }) {
-  console.warn(user.uid);
-  console.warn(user.fbUser.photoURL);
   const router = useRouter();
   const [formData, setFormData] = useState({
     about: '',

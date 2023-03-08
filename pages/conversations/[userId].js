@@ -34,7 +34,7 @@ function UserConversations() {
     <>
       { user ? (
         <div className="text-center my-4">
-          <h2>{profile?.firstName} {profile?.lastName}</h2>
+          <h2>Conversations</h2>
           <div className="conversationCards">
             {conversations?.map((conversation) => (
               <ConversationCard key={user.id} conversationObj={conversation} onUpdate={getUsersConversations} />

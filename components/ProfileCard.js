@@ -6,16 +6,18 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { checkFollow, createFollow, deleteSingleFollow } from '../utils/data/followData';
 import { useAuth } from '../utils/context/authContext';
 
 export default function ProfileCard({ userObj }) {
   const [follow, setFollow] = useState({});
   const { user } = useAuth();
+  const router = useRouter();
+  const { userId } = router.query;
 
   const checkUsersFollows = () => {
-    checkFollow(user.id, userObj.id).then((data) => {
-      console.warn(data[0]);
+    checkFollow(user.id, userId).then((data) => {
       const followObject = data[0];
       setFollow(followObject);
     });
@@ -64,6 +66,13 @@ export default function ProfileCard({ userObj }) {
             <Typography variant="body2" color="text.secondary">
               State: {userObj?.state}
             </Typography>
+            {follow
+              ? (
+                <Button variant="contained" href={`/conversations/messages/${user.id}`}>
+                  Message
+                </Button>
+              )
+              : ('')}
           </CardContent>
         </CardContent>
       </CardActionArea>
