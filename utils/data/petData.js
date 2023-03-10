@@ -53,7 +53,18 @@ const getAllPetsWithTraits = () => new Promise((resolve, reject) => {
 });
 
 const getPetsByTrait = (trait) => new Promise((resolve, reject) => {
-  axios.get(`${dbUrl}/pets?trait=${trait}`)
+  axios.get(`${dbUrl}/pettraits?pet_trait_id=${trait}`)
+    .then((response) => {
+      if (response.data) {
+        resolve(Object.values(response.data));
+      } else {
+        resolve([]);
+      }
+    }).catch((error) => reject(error));
+});
+
+const getPetsByInterest = (interest) => new Promise((resolve, reject) => {
+  axios.get(`${dbUrl}/petinterests?pet_interest_id=${interest}`)
     .then((response) => {
       if (response.data) {
         resolve(Object.values(response.data));
@@ -124,4 +135,5 @@ export {
   getPetsByUser,
   getPetsByTrait,
   getAllPetsWithTraits,
+  getPetsByInterest,
 };
