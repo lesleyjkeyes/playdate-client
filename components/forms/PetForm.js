@@ -104,7 +104,7 @@ function PetForm({ obj }) {
         });
       });
       updatePet(formInput)
-        .then(() => router.push('/'));
+        .then(() => router.push('/yourPets'));
     } else {
       const payload = {
         ...formInput,
@@ -122,9 +122,9 @@ function PetForm({ obj }) {
             pet_id: response.id,
             pet_interest_id: interestId,
           };
-          createPetTrait(petInterestObj);
+          createPetInterests(petInterestObj);
         });
-        router.push('/');
+        router.push('/yourPets');
       });
     }
   };
