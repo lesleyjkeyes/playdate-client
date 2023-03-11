@@ -82,8 +82,10 @@ function Home() {
             <Form.Select
               aria-label="Trait"
               name="trait"
+              value={trait}
               onChange={(e) => {
                 setInterest('');
+                setState('');
                 setTrait(e.target.value);
               }}
               className="mb-3"
@@ -106,8 +108,10 @@ function Home() {
             <Form.Select
               aria-label="Interest"
               name="interest"
+              value={interest}
               onChange={(e) => {
                 setTrait('');
+                setState('');
                 setInterest(e.target.value);
               }}
               className="mb-3"
@@ -130,6 +134,7 @@ function Home() {
             <Form.Select
               aria-label="State"
               name="state"
+              value={state}
               onChange={(e) => {
                 setTrait('');
                 setInterest('');

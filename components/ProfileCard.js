@@ -66,27 +66,25 @@ export default function ProfileCard({ userObj }) {
             <Typography variant="body2" color="text.secondary">
               State: {userObj?.state}
             </Typography>
-            {follow
-              ? (
-                <Button variant="contained" href={`/conversations/messages/${user.id}`}>
-                  Message
-                </Button>
-              )
-              : ('')}
+            {follow && parseInt(userId, 10) !== user.id && (
+              <Button variant="contained" href={`/conversations/messages/${user.id}`}>
+                Message
+              </Button>
+            )}
           </CardContent>
         </CardContent>
       </CardActionArea>
-      {follow
-        ? (
-          <Button size="small" color="primary" onClick={() => handleFollowChange()}>
-            Unfollow
-          </Button>
-        )
-        : (
-          <Button size="small" color="primary" onClick={() => handleFollowChange()}>
-            Follow
-          </Button>
-        )}
+      {follow && parseInt(userId, 10) !== user.id && (
+      <Button size="small" color="primary" onClick={() => handleFollowChange()}>
+        Unfollow
+      </Button>
+      )}
+      {parseInt(userId, 10) !== user.id && !follow && (
+        <Button size="small" color="primary" onClick={() => handleFollowChange()}>
+          Follow
+        </Button>
+      )}
+
     </Card>
   );
 }
